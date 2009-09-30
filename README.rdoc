@@ -1,0 +1,53 @@
+== GC Hacks for Ruby
+
+A plugin for Rails which allows one to obtain heap dumps from a running rails app for
+example. It should work for mongrel and passenger hosted apps.
+
+
+== Author
+
+Stefan Kaes <skaes@railexpress.de>
+
+== Usage
+
+Obtain the processid of a rails process, then invoke one of the following commands:
+
+* start_gc_trace pid      # turns on gc tracing in the given process
+* stop_gc_trace pid       # stop gc tracing
+* dump_heap pid           # dump current heap to "#{tmp_dir}/heap.#{Process.pid}.#{@heap_dump_count}.dump"
+
+
+== Prerequisites
+
+You won't have much fun with this code unless you use a patched ruby which supports dumping
+heap information, compiled with GC_DEBUG enabled.
+
+I recommend my patched version of ruby 1.8.7, which you can get as follows:
+
+    git clone git://github.com/skaes/matzruby.git
+    cd matzruby
+    git checkout ruby187pl202patched
+    autoconf
+    ./configure --enable-gcdebug --prefix=/usr/local/ruby187pl202
+    make
+    sudo make install
+    sudo make install-doc
+
+
+== Installation
+
+Place it in vendor/plugins, as usual.
+
+
+== Acknowledgments
+
+Development of this plugin was sponsored by Xing (http://www.xing.com)
+
+
+== TODO
+
+* I think this code should be a gem.
+* move railsbench analyze_heap_dump command into the gem.
+
+
+
