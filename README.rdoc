@@ -1,4 +1,4 @@
-== GC Hacks for Ruby
+= GC Hacks for Ruby
 
 A plugin for Rails which allows one to obtain heap dumps from a running rails app for
 example. It should work for mongrel and passenger hosted apps.
@@ -7,6 +7,7 @@ example. It should work for mongrel and passenger hosted apps.
 == Author
 
 Stefan Kaes <skaes@railexpress.de>
+
 
 == Usage
 
@@ -24,14 +25,14 @@ heap information, compiled with GC_DEBUG enabled.
 
 I recommend my patched version of ruby 1.8.7, which you can get as follows:
 
-    git clone git://github.com/skaes/matzruby.git
-    cd matzruby
-    git checkout ruby187pl202patched
-    autoconf
-    ./configure --enable-gcdebug --prefix=/usr/local/ruby187pl202
-    make
-    sudo make install
-    sudo make install-doc
+  git clone git://github.com/skaes/matzruby.git
+  cd matzruby
+  git checkout ruby187pl202patched
+  autoconf
+  ./configure --enable-gcdebug --prefix=/usr/local/ruby187pl202
+  make
+  sudo make install
+  sudo make install-doc
 
 
 == Installation
