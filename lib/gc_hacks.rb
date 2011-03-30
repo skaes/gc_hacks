@@ -1,13 +1,44 @@
+require "fileutils"
+
 module GCHacks
 
-  extend << self
+  extend self
 
   def logger
-    @logger ||= defined?(Rails) ? Rails.logger : RAILS_DEFAULT_LOGGER
+    @logger ||=
+      if defined?(Rails)
+        Rails.logger
+      elsif defined?(RAILS_DEFAULT_LOGGER)
+        RAILS_DEFAULT_LOGGER
+      else
+        Logger.new($stdout)
+      end
   end
 
   def root
-    @root ||= defined?(Rails) ? Rails.root.to_s : RAILS_ROOT
+    @root ||=
+      if defined?(Rails)
+        Rails.root.to_s
+      elsif defined?(RAILS_ROOT)
+        RAILS_ROOT
+      else
+        find_rails_root
+      end
+  end
+
+  def find_rails_root
+    while !cwd_is_a_rails_project?
+      if FileUtils.pwd == "/"
+        $stderr.puts "could not determine rails project root. please cd into your rails project"
+        exit 1
+      end
+      FileUtils.cd ".."
+    end
+    FileUtils.pwd
+  end
+
+  def cwd_is_a_rails_project?
+    File.exist?("config/environment.rb") && File.directory?("tmp") && File.directory?("log")
   end
 
   def install_signal_handlers
