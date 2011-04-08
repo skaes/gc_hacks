@@ -13,6 +13,3 @@ if defined?(PhusionPassenger)
 else
   GCHacks.install_signal_handlers
 end
-
-
-
