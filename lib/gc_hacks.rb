@@ -17,8 +17,8 @@ module GCHacks
 
   def root
     @root ||=
-      if defined?(Rails)
-        Rails.root.to_s
+      if defined?(Rails) && Rails.respond_to?(:application)
+        Rails.application.root.to_s
       elsif defined?(RAILS_ROOT)
         RAILS_ROOT
       else
@@ -47,32 +47,35 @@ module GCHacks
   end
 
   def send_command(cmd, pid)
-    File.open(CMD_FILE, "w"){|f| f.puts cmd}
+    File.open(cmd_file, "w"){|f| f.puts cmd}
     Process.kill("WINCH", pid)
   end
 
   def check_and_run_commands
-    read_command_file.each do |cmd|
-      case cmd.chomp
+    read_command_file.each_line do |cmd|
+      # puts "received cmd #{cmd}"
+      case c = cmd.chomp
       when 'HEAPDUMP'   then heap_dump
       when 'STARTTRACE' then start_trace
       when 'STOPTRACE'  then stop_trace
       else
-        logger.info "unknown gc command: '#{cmd}'"
+        logger.info "unknown gc command: '#{c}'"
       end
     end
   ensure
     remove_command_file
   end
 
-  CMD_FILE = File.expand_path("#{root}/tmp/gc_command.txt")
+  def cmd_file
+    "#{tmp_dir}/gc_command.txt"
+  end
 
   def read_command_file
-    File.exist?(CMD_FILE) ? File.read(CMD_FILE) : []
+    File.exist?(cmd_file) ? File.read(cmd_file) : ""
   end
 
   def remove_command_file
-    File.exist?(CMD_FILE) && File.unlink(CMD_FILE)
+    File.exist?(cmd_file) && File.unlink(cmd_file)
   end
 
   def can_trace?
@@ -135,3 +138,6 @@ module GCHacks
   end
 
 end
+
+require 'gc_hacks/railtie' if defined?(Rails) && Rails::VERSION::STRING > "3.0"
+
