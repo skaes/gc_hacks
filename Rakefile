@@ -2,10 +2,9 @@ require 'bundler'
 Bundler::GemHelper.install_tasks
 
 require 'rake'
-require 'rake/testtask'
-require 'rake/rdoctask'
+require 'rdoc/task'
 
-Rake::RDocTask.new do |rdoc|
+RDoc::Task.new do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title    = 'gc_hacks'
   rdoc.options << '--line-numbers' << '--inline-source' << '--quiet'
